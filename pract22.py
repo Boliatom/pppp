@@ -1,322 +1,331 @@
-from unicodedata import category
+import json
+from abc import ABC, abstractmethod
 
 
 def admin_interface():
-    print('Выберите функционал (1, 2, 3, 4, 5, 6, 7)?')
-    print('Добавить новый товар: 1')
-    print('Удалить товар: 2')
-    print('Редактировать товар: 3')
-    print('Добавить нового пользователя: 4')
-    print('Удалить пользователя: 5')
-    print('Редактирование пользователя: 6')
-    print('Просмотр заказов пользователей: 7')
-    print('Выход: 8')
-    try:
-        admin_choice = int(input('Ваш выбор: '))
-    except ValueError:
-        print('Ошибка! Просьба указать номер вашего выбора (1, 2, 3, 4, 5, 6, 7, 8)?')
-        admin_choice = input('Ваш выбор: ')
-
-    while admin_choice not in [1, 2, 3, 4, 5, 6, 7, 8]:
-        print('Ошибка! Просьба указать номер вашего выбора (1, 2, 3, 4, 5, 6, 7, 8)?')
-        admin_choice = int(input('Ваш выбор: '))
-    return admin_choice
-
-
-def add_new_product(name_prod, quantity_prod, price_prod):
-    # print(name_product, quantity_product, price)
-    # print(dict_products[category_product])
-    dict_products[category_product].append([name_prod, quantity_prod, price_prod])
-    # показ товаров выбранной категории
-    print(f'Успешно добавлена позиция в категорию товаров: {category_product}')
-    for j in dict_products[category_product]:
-        print(f'    Товар: {j[0]}, кол-во на складе, шт: {j[1]}, цена/шт., руб.: {j[2]}')
-
-def user_find_product():
-    user_find_prod_in_shop = False
-    user_find = input('Введите наименование товара: ')
-    # print(dict_products.items())
-    for i in dict_products.items():
-        for j in i[1]:
-            if j[0] == user_find:
-                # print(f'Найден товар: {j}')
-                print(f'    Найден товар: {j[0]} в категории: {i[0]}, кол-во на складе, шт: {j[1]}, цена/шт., руб.: {j[2]}')
-                user_find_prod_in_shop = True
-    if not user_find_prod_in_shop:
-        print('К сожалению данного товара в нашем магазине сейчас нет!')
-
-
-def make_user_order():
-    # заказ товаров пользователем
-    if user_active['role'] == 'user':
-
-        # пользовательский поиск товаров (по названию)
-        if input('Вы хотите ввести сразу наименование товара для поиска (да / нет)? ').lower() == 'да':
-            while True:
-                user_find_product()
-                if input('Вы хотите продолжить поиск по наименованию товара (да/нет)? ').lower() == 'нет':
-                    break
-
-
-        print('Выберите номер интересующей категории товаров:')
-        count = 1
-        for i in dict_products.keys():
-            print(f'№{count} категория: {i}')
-            count += 1
-
-    user_choice = input('Номер категории товаров: ')
-    list_categories = list(dict_products.keys())
-    print(f'Вы выбрали категорию: {list_categories[int(user_choice) - 1]}')
-    count_product = 1
-    for i in dict_products[list_categories[int(user_choice) - 1]]:
-        i.insert(0, count_product)
-        print(f'    №{i[0]}: {i[1]}, кол-во на складе, шт: {i[2]}, цена/шт., руб.: {i[3]}')
-        count_product += 1
-
-    # фильтр по цене товара меньше 100 руб.
-    my_filter_price = input('Вы хотите отобразить товары в данной категории дешевле 100 руб? (да / нет): ')
-    if my_filter_price.lower() == 'да':
-        result = filter(lambda price: price[3] < 100, dict_products[list_categories[int(user_choice) - 1]])
-        result = list(result)  # превращаем объект filter в список
-        if len(result) > 0:
-            for j in result:
-                print(f'    №{j[0]}: {j[1]}, кол-во на складе, шт: {j[2]}, цена/шт., руб.: {j[3]}')
-        elif len(result) == 0:
-            print('Товаров дешевле 100 руб. в данной категории нет!')
-
-    order = input('Вы готовы сделать заказ? (да / нет): ')
-    for k in dict_products[list_categories[int(user_choice) - 1]]:
-        k.pop(0)
-    number_product = None
-    if order.lower() == 'да':
-        number_product = int(input('Укажите номер товара: '))
-        product_data = dict_products[list_categories[int(user_choice) - 1]][number_product - 1]
-        count_this_product = product_data[1]
-
-        # Обработка ввода данных (ошибка ValueError)
+    while True:
+        print('Выберите ')
+        print('1. Добавить новый товар')
+        print('2. Удалить товар')
+        print('3. Редактирование пользователя')
+        print('4. Выход')
         while True:
             try:
-                count_product = int(input('Укажите кол-во товаров / шт.: '))
-                break
-            except ValueError:
-                print("Пожалуйста, введите целое положительное число.")
-
-        while count_product > count_this_product:
-            print('На складе нет такого кол-ва данного товара!')
-            try:
-                count_product = int(input('Укажите кол-во товаров / шт.: '))
-                break
-            except ValueError:
-                print("Пожалуйста, введите целое положительное число.")
-        product_data[1] -= count_product
-
-
-
-
-        # user_choice - категория товара
-        # dict_products - словарь продуктов
-        user_order = [
-            username,
-            dict_products[list_categories[int(user_choice) - 1]][number_product - 1][0],
-            count_product,
-            count_product * dict_products[list_categories[int(user_choice) - 1]][number_product - 1][2]
-        ]
-
-        print('-----------------------')
-        print('Данные по заказу:')
-        print(f'Покупатель: {user_order[0]}')
-        print(f'Товар: {user_order[1]}')
-        print(f'шт: {user_order[2]}')
-        print(f'Сумма заказа, руб.: {user_order[3]}')
-
-        return user_order
-
-    elif order.lower() == 'нет':
-        print('Вы не сделали заказа, не выбрали ни один товар!')
-        user_order = [username, None, None, None]
-        return user_order
-
-dict_products = {
-    'игры': [
-        ['товар 1', 10, 2000],
-        ['товар 2', 5, 80],
-        ['товар 3', 1, 50]
-    ],
-    'программы': [
-        ['товар 4', 3, 500],
-        ['товар 5', 6, 300],
-        ['товар 6', 2, 100]
-    ],
-    'курсы': [
-        ['товар 7', 25, 50],
-        ['товар 8', 30, 30],
-        ['товар 9', 20, 10]
-    ]
-}
-
-# print(dict_products)
-
-admin = {
-    'username': 'admin',
-    'password': '666',
-    'role': 'administrator'
-}
-
-users = [
-    {
-        'username': 'user_1',
-        'password': '111',
-        'role': 'user'
-    },
-    {
-        'username': 'user_2',
-        'password': '222',
-        'role': 'user'
-    }
-]
-
-list_order = []  # список заказов пользователей
-list_users = []
-for i in users:
-    list_users += [i['username']]
-
-# print(list_users)
-
-user_active = None
-entrance = False
-username = None
-user_list_orders = []
-while not entrance:
-    print('Добро пожаловать в интернет-магазин!')
-    print('Пожалуйста, авторизуйтесь.')
-    username = input('Логин: ')
-    password = input('Пароль: ')
-    if username in list_users:
-        for i in users:
-            if username == i['username'] and password == i['password']:
-                print(f'Добро пожаловать, {username} в наш интернет-магазин!')
-                user_active = i
-                entrance = True
-                break
-            elif username == i['username'] and password != i['password']:
-                print(f'{username}, вы не прошли проверку!')
-
-    elif username in admin['username'] and password == admin['password']:
-        print(f'Добро пожаловать, {username}!')
-        user_active = admin
-        entrance = True
-        break
-    else:
-        print(f'{username}, вы не прошли проверку!')
-
-# print(user_active)
-while True:
-    if user_active['role'] == 'user':
-        user_list_orders += [make_user_order()]
-        next_order = input('Хотите сделать еще заказ (да/нет)? ')
-        if next_order.lower() == 'нет':
-            break
-    elif user_active['role'] == 'administrator':
-        break
-
-if user_active['role'] == 'user':
-    history_user_order = input('Вы хотите посмотреть список ваших заказов (да/нет)? ')
-    if history_user_order.lower() == 'да':
-        print('Список ваших заказов:')
-        for i in user_list_orders:
-            if i[1]:
-                print('----------------------')
-                # print(i)
-                print('Данные по заказу:')
-                print(f'Покупатель: {i[0]}')
-                print(f'Товар: {i[1]}')
-                print(f'шт: {i[2]}')
-                print(f'Сумма заказа, руб.: {i[3]}')
-
-    change_user_data = input('Может Вы хотите изменить свои учетные данные (да/нет)? ')
-
-    if change_user_data.lower() == 'да':
-        new_username = input('Введите новое имя пользователя: ')
-        user_active['username'] = new_username
-        new_password = input('Введите новый пароль пользователя: ')
-        user_active['password'] = new_password
-        print('Ваши новые учетные данные:')
-        print(f'Логин: {user_active['username']}')
-        print(f'Пароль: {user_active['password']}')
-        print(f'Спасибо за покупки, {user_active['username']}! Ждем вас снова в нашем интернет-магазине!')
-
-    elif change_user_data.lower() == 'нет':
-        print(f'Спасибо за покупки, {user_active['username']}! Ждем вас снова в нашем интернет-магазине!')
-
-elif user_active['role'] == 'administrator':
-    while True:
-        admin_choice = admin_interface()
-
-
-        if  admin_choice == 1:
-            while True:
-                print('*********** Добавление товара **************')
-                print('Сейчас на складе категории товаров / товары:')
-                for i in dict_products:
-                    print(i)
-                    for j in dict_products[i]:
-                        print(f'    Товар: {j[0]}, кол-во на складе, шт: {j[1]}, цена/шт., руб.: {j[2]}')
-
-                # показ товаров выбранной категории
-                category_product = input('Введите категорию товара: ').lower()
-                print(f'Выбрана категория товаров: {category_product}')
-                for j in dict_products[category_product]:
-                        print(f'    Товар: {j[0]}, кол-во на складе, шт: {j[1]}, цена/шт., руб.: {j[2]}')
-
-                # добавление товаров в выбранную категорию
-                name_product = input('Введите наименование товара: ')
-                quantity_product = input('Введите кол-во товара: ')
-                price = input('Введите цену товара, руб.: ')
-
-                add_new_product(name_product, quantity_product, price)
-                print('************************')
-                exit_choice_admin = input('Вы хотите продолжить добавлять товар на склад (да / нет)? ')
-                if exit_choice_admin.lower() == 'нет':
+                admin_choice = int(input('Ваш выбор: '))
+                if admin_choice in [1, 2, 3, 4]:
                     break
-        elif  admin_choice == 2:
-            while True:
-                print('*********** Удаление товара **************')
-                print('Сейчас на складе категории товаров / товары:')
-                for i in dict_products:
-                    print(i)
-                    for j in dict_products[i]:
-                        print(f'    Товар: {j[0]}, кол-во на складе, шт: {j[1]}, цена/шт., руб.: {j[2]}')
+                else:
+                    print('Ошибка! Введите число от 1 до 4.')
+            except ValueError:
+                print('Ошибка! Введите число от 1 до 4.')
 
-                # показ товаров выбранной категории для дальнейшего удаления
-                category_product = input('Введите категорию товара: ').lower()
-                print(f'Выбрана категория товаров: {category_product}')
-                count_product = 1
-                for i in dict_products[category_product]:
-                    i.insert(0, count_product)
-                    print(f'    №{i[0]}: {i[1]}, кол-во на складе, шт: {i[2]}, цена/шт., руб.: {i[3]}')
-                    count_product += 1
-
-                # удаление товаров в выбранной категории
-                number_delete_name_product = int(input('Введите номер удаляемого товара: '))
-                # print(number_delete_name_product)
-
-                # удаляем временную нумерацию продуктов из бд товаров
-                for k in dict_products[category_product]:
-                    k.pop(0)
-
-                dict_products[category_product].pop(number_delete_name_product - 1)
-
-                print('************************')
-                print(f'Выбрана категория товаров: {category_product}')
-                for i in dict_products[category_product]:
-                    print(f'    Товар: {i[0]}, кол-во на складе, шт: {i[1]}, цена/шт., руб.: {i[2]}')
-
-                print('************************')
-                exit_choice_admin = input('Вы хотите продолжить удалять товар на складе (да / нет)? ')
-                if exit_choice_admin.lower() == 'нет':
-                    break
-        elif admin_choice == 8:
+        if admin_choice == 1:
+            add_product_to_store(store)
+        elif admin_choice == 2:
+            remove_product_from_store(store)
+        elif admin_choice == 3:
+            edit_user()
+        elif admin_choice == 4:
             print('Всего доброго, admin!')
             break
 
+# абстракция
+class User(ABC):
+    def __init__(self, username, password, role):
+        self.__username = username
+        self.__password = password
+        self.__role = role
 
+    def get_username(self):
+        return self.__username
+
+
+    def set_username(self, new_username):
+        self.__username = new_username
+
+
+    def get_password(self):
+        return self.__password
+
+    def set_password(self, new_password):
+        self.__password = new_password
+
+    def get_role(self):
+        return self.__role
+
+
+    @abstractmethod
+    def show_interface(self):
+        pass
+
+
+class Admin(User):
+    def show_interface(self):
+        admin_interface()
+
+
+class Customer(User):
+    def __init__(self, username, password, role):
+        super().__init__(username, password, role)
+        self.__orders = []
+
+
+    def get_orders(self):
+        return self.__orders
+
+
+    def add_order(self, order):
+        self.__orders.append(order)
+
+    def show_interface(self):
+        customer_interface(self)
+
+
+class Product:
+    def __init__(self, name, quantity, price):
+        self.__name = name
+        self.__quantity = quantity
+        self.__price = price
+
+
+    def get_name(self):
+        return self.__name
+
+
+    def get_quantity(self):
+        return self.__quantity
+
+
+    def set_quantity(self, new_quantity):
+        self.__quantity = new_quantity
+
+
+    def get_price(self):
+        return self.__price
+
+
+class Store:
+    def __init__(self):
+        self.__products = {}
+
+    def get_products(self):
+        return self.__products
+
+    def add_product(self, category, product):
+        if category in self.__products:
+            self.__products[category].append(product)
+        else:
+            self.__products[category] = [product]
+        self.save_data()
+
+    def remove_product(self, category, product_name):
+        if category in self.__products:
+            self.__products[category] = [p for p in self.__products[category] if p.get_name() != product_name]
+        self.save_data()
+
+    def save_data(self):
+        data = {
+            'products': {
+                category: [
+                    {'name': product.get_name(), 'quantity': product.get_quantity(), 'price': product.get_price()}
+                    for product in products
+                ]
+                for category, products in self.__products.items()
+            }
+        }
+        with open('store_data.json', 'w', encoding='utf-8') as file:
+            json.dump(data, file, ensure_ascii=False, indent=4)
+
+
+    @staticmethod
+    def load_data():
+        try:
+            with open('store_data.json', 'r', encoding='utf-8') as file:
+                data = json.load(file)
+                store = Store()
+                for category, products in data['products'].items():
+                    store.__products[category] = [
+                        Product(product['name'], product['quantity'], product['price'])
+                        for product in products
+                    ]
+                return store
+        except FileNotFoundError:
+
+            return Store()
+
+
+
+def add_product_to_store(store):
+    print('*********** Добавление товара **************')
+    print('Сейчас на складе категории товаров / товары:')
+    for category, products in store.get_products().items():
+        print(category)
+        for product in products:
+            print(f'    Товар: {product.get_name()}, кол-во на складе, шт: {product.get_quantity()}, цена/шт., руб.: {product.get_price()}')
+
+    category = input('Введите категорию товара: ').lower()
+    name = input('Введите наименование товара: ')
+    while True:
+        try:
+            quantity = int(input('Введите кол-во товара: '))
+            break
+        except ValueError:
+            print('Ошибка! Введите целое число для количества товара.')
+    while True:
+        try:
+            price = float(input('Введите цену товара, руб.: '))
+            break
+        except ValueError:
+            print('Ошибка! Введите число для цены товара.')
+
+    new_product = Product(name, quantity, price)
+    store.add_product(category, new_product)
+    print(f'Товар "{name}" успешно добавлен в категорию "{category}".')
+
+def remove_product_from_store(store):
+    print('*********** Удаление товара **************')
+    print('Сейчас на складе категории товаров / товары:')
+    for category, products in store.get_products().items():
+        print(category)
+        for product in products:
+            print(f'    Товар: {product.get_name()}, кол-во на складе, шт: {product.get_quantity()}, цена/шт., руб.: {product.get_price()}')
+
+    category = input('Введите категорию товара: ').lower()
+    name = input('Введите наименование товара для удаления: ')
+    store.remove_product(category, name)
+    print(f'Товар "{name}" успешно удален из категории "{category}".')
+
+def edit_user():
+    print('*********** Редактирование пользователя **************')
+    username = input('Введите имя пользователя для редактирования: ')
+    new_username = input('Введите новое имя пользователя: ')
+    new_password = input('Введите новый пароль: ')
+    # Здесь можно добавить логику для поиска и изменения пользователя в списке пользователей
+    print(f'Пользователь "{username}" успешно изменен.')
+
+def customer_interface(customer):
+    while True:
+        order = make_order(store)
+        if order:
+            customer.add_order(order)
+        if input('Хотите сделать еще заказ (да/нет)? ').lower() == 'нет':
+            break
+    view_orders(customer)
+    change_user_data(customer)
+
+def make_order(store):
+    print('Выберите номер интересующей категории товаров:')
+    categories = list(store.get_products().keys())
+    for i, category in enumerate(categories, 1):
+        print(f'№{i} категория: {category}')
+
+    while True:
+        try:
+            user_choice = int(input('Номер категории товаров: ')) - 1
+            if 0 <= user_choice < len(categories):
+                break
+            else:
+                print('Ошибка! Введите номер из списка.')
+        except ValueError:
+            print('Ошибка! Введите число.')
+
+    selected_category = categories[user_choice]
+    print(f'Вы выбрали категорию: {selected_category}')
+
+
+    filter_choice = input('Вы хотите отобразить товары дешевле 100 руб? (да/нет): ').lower()
+    products = store.get_products()[selected_category]
+    if filter_choice == 'да':
+        products = [p for p in products if p.get_price() < 100]
+
+    for i, product in enumerate(products, 1):
+        print(f'    №{i}: {product.get_name()}, кол-во на складе, шт: {product.get_quantity()}, цена/шт., руб.: {product.get_price()}')
+
+    while True:
+        try:
+            product_choice = int(input('Укажите номер товара: ')) - 1
+            if 0 <= product_choice < len(products):
+                break
+            else:
+                print('Ошибка! Введите номер из списка.')
+        except ValueError:
+            print('Ошибка! Введите число.')
+
+    selected_product = products[product_choice]
+
+    while True:
+        try:
+            quantity = int(input('Укажите кол-во товаров / шт.: '))
+            if quantity > selected_product.get_quantity():
+                print('На складе нет такого кол-ва данного товара!')
+            else:
+                break
+        except ValueError:
+            print('Ошибка! Введите целое число.')
+
+    selected_product.set_quantity(selected_product.get_quantity() - quantity)
+    total_price = quantity * selected_product.get_price()
+
+
+    store.save_data()
+
+    order = {
+        'customer': customer.get_username(),
+        'product': selected_product.get_name(),
+        'quantity': quantity,
+        'total_price': total_price
+    }
+
+    print('-----------------------')
+    print('Данные по заказу:')
+    print(f'Покупатель: {order["customer"]}')
+    print(f'Товар: {order["product"]}')
+    print(f'шт: {order["quantity"]}')
+    print(f'Сумма заказа, руб.: {order["total_price"]}')
+
+    return order
+
+def view_orders(customer):
+    if input('Вы хотите посмотреть список ваших заказов (да/нет)? ').lower() == 'да':
+        print('Список ваших заказов:')
+        for order in customer.get_orders():
+            if order:
+                print('----------------------')
+                print('Данные по заказу:')
+                print(f'Покупатель: {order["customer"]}')
+                print(f'Товар: {order["product"]}')
+                print(f'шт: {order["quantity"]}')
+                print(f'Сумма заказа, руб.: {order["total_price"]}')
+
+def change_user_data(customer):
+    if input('Хотите изменить свои учетные данные? (да/нет): ').lower() == 'да':
+        new_username = input('Введите новое имя пользователя: ')
+        new_password = input('Введите новый пароль: ')
+        customer.set_username(new_username)
+        customer.set_password(new_password)
+        print('Ваши данные успешно изменены.')
+
+
+store = Store.load_data()  # Загрузка данных при начале программы
+admin = Admin('admin', '666', 'administrator')
+customer = Customer('user_1', '111', 'user')
+
+
+def authenticate(username, password):
+    if username == admin.get_username() and password == admin.get_password():
+        return admin
+    elif username == customer.get_username() and password == customer.get_password():
+        return customer
+    else:
+        return None
+
+while True:
+    username = input('Логин: ')
+    password = input('Пароль: ')
+    user = authenticate(username, password)
+    if user:
+        print(f'Добро пожаловать, {user.get_username()}!')
+        user.show_interface()
+        break
+    else:
+        print('Ошибка! Попробуйте снова.')

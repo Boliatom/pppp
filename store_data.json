@@ -1,0 +1,67 @@
+{
+    "products": {
+        "игры": [
+            {
+                "name": "товар 1",
+                "quantity": 5,
+                "price": 2000
+            },
+            {
+                "name": "товар 2",
+                "quantity": 5,
+                "price": 80
+            },
+            {
+                "name": "товар 3",
+                "quantity": 1,
+                "price": 50
+            },
+            {
+                "name": "товар 1",
+                "quantity": 10,
+                "price": 2000.0
+            }
+        ],
+        "программы": [
+            {
+                "name": "товар 4",
+                "quantity": 3,
+                "price": 500
+            },
+            {
+                "name": "товар 5",
+                "quantity": 6,
+                "price": 300
+            },
+            {
+                "name": "товар 6",
+                "quantity": 2,
+                "price": 100
+            }
+        ],
+        "курсы": [
+            {
+                "name": "товар 7",
+                "quantity": 25,
+                "price": 50
+            },
+            {
+                "name": "товар 8",
+                "quantity": 30,
+                "price": 30
+            },
+            {
+                "name": "товар 9",
+                "quantity": 20,
+                "price": 10
+            }
+        ],
+        "re": [
+            {
+                "name": "dds",
+                "quantity": 44,
+                "price": 22.0
+            }
+        ]
+    }
+}
